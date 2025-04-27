@@ -1,8 +1,8 @@
 package main
 
 import (
-  "fmt"
-  "math"
+	"fmt"
+	"math"
 )
 
 type Vect struct {
@@ -11,11 +11,11 @@ type Vect struct {
 }
 
 func (v Vect) AddAll(others ...Vect) Vect {
-  out := v
- for _, vect := range others {
-    out = out.Add(vect)
-  }
-  return out
+	out := v
+	for _, vect := range others {
+		out = out.Add(vect)
+	}
+	return out
 }
 
 func (v Vect) Add(other Vect) Vect {
@@ -31,7 +31,7 @@ func (v Vect) Avg(other Vect) Vect {
 }
 
 func (v Vect) Div(numerator float64) (Vect, error) {
-  // This doesn't work.. it's a float..
+	// This doesn't work.. it's a float..
 	if numerator == 0 {
 		return Vect{}, fmt.Errorf("Cannot divide by 0!")
 	}
@@ -44,13 +44,13 @@ func (v Vect) Mul(scalar float64) Vect {
 }
 
 func (v Vect) magnitude() float64 {
-  return math.Sqrt(math.Pow(v.x, 2) + math.Pow(v.y, 2))
+	return math.Sqrt(math.Pow(v.x, 2) + math.Pow(v.y, 2))
 }
 
 func (v Vect) Normalize() Vect {
-  return Vect { v.x / v.magnitude(), v.y / v.magnitude() }
+	return Vect{v.x / v.magnitude(), v.y / v.magnitude()}
 }
 
 func (v Vect) ZeroHuh() bool {
-  return v.x == 0 && v.y == 0
+	return v.x == 0 && v.y == 0
 }
