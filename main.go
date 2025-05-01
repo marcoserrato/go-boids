@@ -28,9 +28,9 @@ type Config struct {
 // NewWorld creates a new world.
 func NewWorld(width, height int, boidCount int) *World {
 	dfl := &Config{
-		rule1: 200.0,
-		rule2: 1.0,
-		rule3: 1.0,
+		rule1: 10.0,
+		rule2: 10.0,
+		rule3: 0.9,
 	}
 	w := &World{
 		workers: make([]*BoidWorker, 0),

@@ -18,6 +18,14 @@ func (v Vect) AddAll(others ...Vect) Vect {
 	return out
 }
 
+func (v Vect) MinAll(others ...Vect) Vect {
+	out := v
+	for _, vect := range others {
+		out = out.Min(vect)
+	}
+	return out
+}
+
 func (v Vect) Add(other Vect) Vect {
 	return Vect{v.x + other.x, v.y + other.y}
 }
@@ -53,4 +61,19 @@ func (v Vect) Normalize() Vect {
 
 func (v Vect) ZeroHuh() bool {
 	return v.x == 0 && v.y == 0
+}
+
+func VectorDistance(me, other Vect) float64 {
+	return math.Sqrt(
+		math.Pow(other.x-me.x, 2) + math.Pow(other.y-me.y, 2),
+	)
+}
+
+func (v Vect) Clamp() Vect {
+	mag := math.Sqrt(v.x*v.x + v.y*v.y)
+	if mag > 1 {
+		scale := 1 / mag
+		return Vect{v.x * scale, v.y * scale}
+	}
+	return v
 }

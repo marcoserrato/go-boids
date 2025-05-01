@@ -23,7 +23,7 @@ func Rule1(all []Boid, boid *Boid, factor float64) Vect {
 	result = result.Min(boid.position)
 
 	if !result.ZeroHuh() {
-		result, _ = result.Div(factor)
+		result, _ = result.Div(VectorDistance(boid.position, result) * factor)
 	}
 
 	return result
@@ -38,15 +38,18 @@ func Rule1(all []Boid, boid *Boid, factor float64) Vect {
 // since it should be 0.
 func Rule2(all []Boid, boid *Boid, factor float64) Vect {
 	pushAway := Vect{0, 0}
+	total := 0.0
 	for _, v := range all {
 		distance := Distance(v, *boid)
-		if distance < 20.0 {
+		if distance < 50.0 {
+			total += 1
 			toNeighbor := boid.position.Min(v.position)
 			toNeighbor, _ = toNeighbor.Div(distance)
 			pushAway = pushAway.Add(toNeighbor)
 		}
 	}
 
+	pushAway, _ = pushAway.Div(total)
 	pushAway, _ = pushAway.Div(factor)
 
 	return pushAway
@@ -57,12 +60,18 @@ func Rule2(all []Boid, boid *Boid, factor float64) Vect {
 // dividing by the number of boids
 func Rule3(all []Boid, boid *Boid, factor float64) Vect {
 	average := Vect{0, 0}
+	total := 0.0
 	for _, v := range all {
-		average = average.Add(v.velocity)
+		if Distance(v, *boid) < 100.0 {
+			total += 1
+			average = average.Add(v.velocity)
+		}
 	}
 
-	average, _ = average.Div(float64(len(all)))
-	average, _ = average.Div(factor)
+	if total > 0 {
+		average, _ = average.Div(total)
+		average, _ = average.Div(factor)
+	}
 
 	return average
 }

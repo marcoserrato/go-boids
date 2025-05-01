@@ -18,8 +18,8 @@ func NewRandom(maxWidth, maxHeight int) *Boid {
 			rand.Float64() * float64(maxHeight),
 		},
 		Vect{
-			rand.Float64() * 2,
-			rand.Float64() * 2,
+			rand.Float64() * 0.01,
+			rand.Float64() * 0.01,
 		},
 	}
 }
@@ -53,8 +53,17 @@ func (p *Boid) update() {
 }
 
 func (p *Boid) RoundedUpdate(w, h int) {
-	p.position.y = math.Mod((p.position.y + p.velocity.y), float64(h))
-	p.position.x = math.Mod((p.position.x + p.velocity.x), float64(w))
+	if p.position.x+p.velocity.x < 0 {
+		p.position.x = float64(w) - math.Mod((p.position.x+p.velocity.x), float64(w))
+	} else {
+		p.position.x = math.Mod((p.position.x + p.velocity.x), float64(w))
+	}
+
+	if p.position.y+p.velocity.y < 0 {
+		p.position.y = float64(h) - math.Mod((p.position.y+p.velocity.y), float64(h))
+	} else {
+		p.position.y = math.Mod((p.position.y + p.velocity.y), float64(h))
+	}
 }
 
 type BoidWorker struct {
@@ -91,7 +100,7 @@ func (bw *BoidWorker) Run(l *sync.RWMutex) {
 		//   fmt.Printf("Rule3: %f/%f\n", r3.x, r3.y)
 		// }
 
-		bw.boid.velocity = bw.boid.velocity.Avg(Vect{0, 0}.AddAll(r3, r2, r1))
+		bw.boid.velocity = bw.boid.velocity.MinAll(r3, r2, r1).Clamp()
 
 		bw.boid.RoundedUpdate(640, 480)
 
