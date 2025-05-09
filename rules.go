@@ -15,16 +15,17 @@ func Distance(me, other Boid) float64 {
 // of boids. Then build a vector from the boid to the center of mass
 func Rule1(all []Boid, boid *Boid, factor float64) Vect {
 	centerOfMass := Vect{0, 0}
+	total := 0.0
 	for _, v := range all {
-		centerOfMass = centerOfMass.Add(v.position)
+		if Distance(v, *boid) < 40.0 {
+			centerOfMass = centerOfMass.Add(v.position)
+			total += 1
+		}
 	}
 
-	result, _ := centerOfMass.Div(float64(len(all)))
+	result, _ := centerOfMass.Div(total)
 	result = result.Min(boid.position)
-
-	if !result.ZeroHuh() {
-		result, _ = result.Div(VectorDistance(boid.position, result) * factor)
-	}
+	result, _ = result.Div(factor)
 
 	return result
 }
@@ -41,7 +42,7 @@ func Rule2(all []Boid, boid *Boid, factor float64) Vect {
 	total := 0.0
 	for _, v := range all {
 		distance := Distance(v, *boid)
-		if distance < 50.0 {
+		if distance < 40.0 {
 			total += 1
 			toNeighbor := boid.position.Min(v.position)
 			toNeighbor, _ = toNeighbor.Div(distance)
@@ -62,7 +63,7 @@ func Rule3(all []Boid, boid *Boid, factor float64) Vect {
 	average := Vect{0, 0}
 	total := 0.0
 	for _, v := range all {
-		if Distance(v, *boid) < 100.0 {
+		if Distance(v, *boid) < 40.0 {
 			total += 1
 			average = average.Add(v.velocity)
 		}

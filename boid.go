@@ -94,14 +94,7 @@ func (bw *BoidWorker) Run(l *sync.RWMutex) {
 		r2 := Rule2(friends, bw.boid, bw.config.rule2)
 		r3 := Rule3(friends, bw.boid, bw.config.rule3)
 
-		// if bw.id == 1 {
-		//   fmt.Printf("Rule1: %f/%f\n", r1.x, r1.y)
-		//   fmt.Printf("Rule2: %f/%f\n", r2.x, r2.y)
-		//   fmt.Printf("Rule3: %f/%f\n", r3.x, r3.y)
-		// }
-
-		bw.boid.velocity = bw.boid.velocity.MinAll(r3, r2, r1).Clamp()
-
+		bw.boid.velocity = bw.boid.velocity.AddAll(r3, r2, r1).Clamp()
 		bw.boid.RoundedUpdate(640, 480)
 
 		bw.out <- bw.boid.position

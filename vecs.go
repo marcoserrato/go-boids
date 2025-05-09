@@ -71,8 +71,8 @@ func VectorDistance(me, other Vect) float64 {
 
 func (v Vect) Clamp() Vect {
 	mag := math.Sqrt(v.x*v.x + v.y*v.y)
-	if mag > 1 {
-		scale := 1 / mag
+	if mag > 3 {
+		scale := 3 / mag
 		return Vect{v.x * scale, v.y * scale}
 	}
 	return v

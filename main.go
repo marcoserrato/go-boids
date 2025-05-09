@@ -28,9 +28,9 @@ type Config struct {
 // NewWorld creates a new world.
 func NewWorld(width, height int, boidCount int) *World {
 	dfl := &Config{
-		rule1: 10.0,
-		rule2: 10.0,
-		rule3: 0.9,
+		rule1: 20.0,
+		rule2: 1.0,
+		rule3: 2.0,
 	}
 	w := &World{
 		workers: make([]*BoidWorker, 0),
@@ -81,9 +81,9 @@ func (w *World) Draw(pix []byte) {
 		if !(row < 0 || col < 0 || row >= w.height || col >= w.width) {
 			base := (row * 4 * w.width) + (col * 4)
 			pix[base] = 0xFF
-			pix[base+1] = 0xFF
-			pix[base+2] = 0xFF
-			pix[base+3] = 0xFF
+			pix[base+1] = 0xAA
+			pix[base+2] = 0xAA
+			pix[base+3] = 0xAA
 		}
 	}
 }
@@ -139,7 +139,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 
 func main() {
 	g := &Game{
-		world: NewWorld(screenWidth, screenHeight, 500),
+		world: NewWorld(screenWidth, screenHeight, 700),
 	}
 
 	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
