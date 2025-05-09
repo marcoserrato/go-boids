@@ -69,15 +69,17 @@ func (p *Boid) RoundedUpdate(w, h int) {
 type BoidWorker struct {
 	boid    *Boid
 	config  *Config
+	desire  *Vect
 	friends map[int]Boid
 	out     chan Vect
 	id      int
 }
 
-func NewWorker(w, h int, friends map[int]Boid, id int, c *Config) *BoidWorker {
+func NewWorker(w, h int, friends map[int]Boid, id int, c *Config, d *Vect) *BoidWorker {
 	return &BoidWorker{
 		NewRandom(w, h),
 		c,
+		d,
 		friends,
 		make(chan Vect, 1),
 		id,
@@ -93,8 +95,9 @@ func (bw *BoidWorker) Run(l *sync.RWMutex) {
 		r1 := Rule1(friends, bw.boid, bw.config.rule1)
 		r2 := Rule2(friends, bw.boid, bw.config.rule2)
 		r3 := Rule3(friends, bw.boid, bw.config.rule3)
+		r4 := Rule4(bw.desire, bw.boid)
 
-		bw.boid.velocity = bw.boid.velocity.AddAll(r3, r2, r1).Clamp()
+		bw.boid.velocity = bw.boid.velocity.AddAll(r4, r3, r2, r1).Clamp()
 		bw.boid.RoundedUpdate(640, 480)
 
 		bw.out <- bw.boid.position

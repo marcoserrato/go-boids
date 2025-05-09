@@ -76,3 +76,7 @@ func Rule3(all []Boid, boid *Boid, factor float64) Vect {
 
 	return average
 }
+
+func Rule4(desire *Vect, boid *Boid) Vect {
+	return desire.Min(boid.position).Mul(1 / VectorDistance(*desire, boid.position)).Mul(0.26)
+}

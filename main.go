@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,6 +17,7 @@ type World struct {
 	width   int
 	height  int
 	config  *Config
+	desire  *Vect
 	lock    sync.RWMutex
 }
 
@@ -28,20 +30,22 @@ type Config struct {
 // NewWorld creates a new world.
 func NewWorld(width, height int, boidCount int) *World {
 	dfl := &Config{
-		rule1: 20.0,
-		rule2: 1.0,
-		rule3: 2.0,
+		rule1: 60.0,
+		rule2: 1.12,
+		rule3: 1.72,
 	}
+	desire := &Vect{0, 0}
 	w := &World{
 		workers: make([]*BoidWorker, 0),
 		current: make(map[int]Boid),
 		frame:   make([]Vect, 0),
 		width:   width,
 		height:  height,
+		desire:  desire,
 		config:  dfl,
 	}
 	for i := range boidCount {
-		worker := NewWorker(width, height, w.current, i, dfl)
+		worker := NewWorker(width, height, w.current, i, dfl, desire)
 		w.workers = append(w.workers, worker)
 		w.current[i] = *worker.boid
 	}
@@ -117,6 +121,11 @@ func (g *Game) Update() error {
 
 	if g.tick%1 == 0 {
 		g.world.Update(g.tick)
+	}
+
+	if g.tick%200 == 0 {
+		g.world.desire.x = rand.Float64() * float64(g.world.width)
+		g.world.desire.y = rand.Float64() * float64(g.world.height)
 	}
 
 	g.tick += 1
